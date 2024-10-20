@@ -7,6 +7,7 @@ import {errorHandler} from './middleware/error-handler.js'
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user_route.js'
 import postRoutes from './routes/post_route.js'
+import notificationRouter from './routes/notification_route.js'
 import {v2 as cloudinary} from "cloudinary";
 
 dotenv.config();
@@ -26,8 +27,8 @@ app.use(cookieParser());
 
 app.use("/api/auth",authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/posts",postRoutes)
-
+app.use("/api/posts",postRoutes);
+app.use('/api/notifications',notificationRouter)
 
 //error handling middleware
 app.use(errorHandler);
