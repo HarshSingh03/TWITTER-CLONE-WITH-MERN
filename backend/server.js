@@ -1,12 +1,12 @@
 import 'express-async-errors'
 import express from 'express';
-import authRoutes from './routes/auth_routes.js'
+import authRoutes from './routes/auth_route.js'
 import dotenv from 'dotenv';
 import connectMongoDB from './db/connectDB.js';
 import {errorHandler} from './middleware/error-handler.js'
 import cookieParser from 'cookie-parser';
-import userRoutes from './routes/user_routes.js'
-import postRoutes from './routes/post_routes.js'
+import userRoutes from './routes/user_route.js'
+import postRoutes from './routes/post_route.js'
 import {v2 as cloudinary} from "cloudinary";
 
 dotenv.config();
