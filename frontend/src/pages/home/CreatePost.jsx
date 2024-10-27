@@ -48,6 +48,7 @@ const CreatePost = () => {
 	};
 
 	const handleImgChange = (e) => {
+		
 		const file = e.target.files[0];
 		if (file) {
 			const reader = new FileReader();
@@ -84,7 +85,7 @@ const CreatePost = () => {
 						<img src={img} className='w-full mx-auto h-72 object-contain rounded' />
 					</div>
 				)}
-c
+
 				<div className='flex justify-between border-t py-2 border-t-gray-700'>
 					<div className='flex gap-1 items-center'>
 						<CiImageOn
