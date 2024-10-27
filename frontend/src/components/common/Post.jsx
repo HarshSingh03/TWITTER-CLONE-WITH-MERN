@@ -5,13 +5,30 @@ import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const Post = ({ post }) => {
 	const [comment, setComment] = useState("");
 	const postOwner = post.user;
+	const {data:authUser} = useQuery({queryKey:['authUser']})
+
+	const {mutate:deletePost, isPending} = useMutation({
+		mutationFn: async () => {
+			try {
+				const res = await fetch(`/api/posts/${post._id}`,{
+					method:'DELETE'
+				})
+				const data = await res.json();
+				
+			} catch (error) {
+				
+			}
+		}
+	})
+
 	const isLiked = false;
 
-	const isMyPost = true;
+	const isMyPost = authUser._id === post.user;
 
 	const formattedDate = "1h";
 
