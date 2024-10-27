@@ -6,12 +6,15 @@ import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import LoadingSpinner from "./LoadingSpinner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Post = ({ post }) => {
 	const [comment, setComment] = useState("");
-	const postOwner = post.user;
+	const queryClient = useQueryClient();
 	const {data:authUser} = useQuery({queryKey:['authUser']})
-
+	
 	const {mutate:deletePost, isPending} = useMutation({
 		mutationFn: async () => {
 			try {
@@ -19,22 +22,33 @@ const Post = ({ post }) => {
 					method:'DELETE'
 				})
 				const data = await res.json();
-				
+				if (!res.ok){
+					throw new Error(data.error || "Something went wrong")
+				}
+				return data;
 			} catch (error) {
-				
+				throw new Error(error);	
 			}
+		},
+		onSuccess:()=>{
+			toast.success("Post Deleted Successfully");
+			//invalidate the query to refetch the data
+			queryClient.invalidateQueries({queryKey:['posts']})
 		}
 	})
+	const postOwner = post.user;
 
 	const isLiked = false;
 
-	const isMyPost = authUser._id === post.user;
+	const isMyPost = authUser._id === post.user._id;
 
 	const formattedDate = "1h";
 
 	const isCommenting = false;
 
-	const handleDeletePost = () => {};
+	const handleDeletePost = () => {
+		deletePost();
+	};
 
 	const handlePostComment = (e) => {
 		e.preventDefault();
@@ -62,7 +76,10 @@ const Post = ({ post }) => {
 						</span>
 						{isMyPost && (
 							<span className='flex justify-end flex-1'>
-								<FaTrash className='cursor-pointer hover:text-red-500' onClick={handleDeletePost} />
+								{!isPending && (<FaTrash className='cursor-pointer hover:text-red-500' onClick={handleDeletePost} />)}
+								{isPending && (
+									<LoadingSpinner className='sm'/>
+								)}
 							</span>
 						)}
 					</div>
