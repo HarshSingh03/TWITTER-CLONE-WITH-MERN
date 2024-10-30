@@ -6,7 +6,7 @@ import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
 import toast from 'react-hot-toast'
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 const Sidebar = () => {
 	const queryClient = useQueryClient();
 	const { mutate: logout } = useMutation({
@@ -31,13 +31,15 @@ const Sidebar = () => {
 			toast.error("Log Out failed")
 		}
 	})
-	const data = {
-		fullName: "John Doe",
-		username: "johndoe",
-		profileImg: "/avatars/boy1.png",
-	};
-
-
+	// const data = {
+	// 	fullName: "John Doe",
+	// 	username: "johndoe",
+	// 	profileImg: "/avatars/boy1.png",
+	// };
+	const {data, isLoading} = useQuery({
+		queryKey:["authUser"]
+	})
+	
 	return (
 		<div className='md:flex-[2_2_0] w-18 max-w-52'>
 			<div className='sticky top-0 left-0 h-screen flex flex-col border-r border-gray-700 w-20 md:w-full'>
