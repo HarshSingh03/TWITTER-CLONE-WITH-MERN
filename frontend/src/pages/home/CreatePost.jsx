@@ -4,26 +4,28 @@ import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import EmojiPicker from 'emoji-picker-react';
 
 const CreatePost = () => {
 	const [text, setText] = useState("");
 	const [img, setImg] = useState(null);
+	const [emojiPicker, setEmojiPicker] = useState(false);
 
 	const imgRef = useRef(null);
 
-	
-	const {data:authUser} = useQuery({queryKey:['authUser']})
+
+	const { data: authUser } = useQuery({ queryKey: ['authUser'] })
 	const queryClient = useQueryClient();
-	
-	const {mutate:createPost,isPending, isError, error} = useMutation({
-		mutationFn: async ({text,img})=>{
+
+	const { mutate: createPost, isPending, isError, error } = useMutation({
+		mutationFn: async ({ text, img }) => {
 			try {
-				const res = await fetch('/api/posts/create',{
-					method:"POST",
-					headers:{
-						"Content-Type":"application/json"
+				const res = await fetch('/api/posts/create', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
 					},
-					body:JSON.stringify({text,img})
+					body: JSON.stringify({ text, img })
 				});
 				const data = await res.json();
 				if (!res.ok) throw new Error(data.error || "Something went wrong")
@@ -31,24 +33,24 @@ const CreatePost = () => {
 				throw new Error(error)
 			}
 		},
-		onSuccess:()=>{
+		onSuccess: () => {
 			setText("");
 			setImg(null);
 			toast.success("Post created Successfully");
-			queryClient.invalidateQueries({queryKey:['posts']})
+			queryClient.invalidateQueries({ queryKey: ['posts'] })
 		}
 	});
-	
-	
+
+
 
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		createPost({text,img})
+		createPost({ text, img })
 	};
 
 	const handleImgChange = (e) => {
-		
+
 		const file = e.target.files[0];
 		if (file) {
 			const reader = new FileReader();
@@ -68,10 +70,11 @@ const CreatePost = () => {
 			</div>
 			<form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
 				<textarea
-					className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800'
+					className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800 t-area'
 					placeholder='What is happening?!'
 					value={text}
-					onChange={(e) => setText(e.target.value)}
+					onChange={(e) => {setText(e.target.value)}}
+					
 				/>
 				{img && (
 					<div className='relative w-72 mx-auto'>
@@ -92,11 +95,23 @@ const CreatePost = () => {
 							className='fill-primary w-6 h-6 cursor-pointer'
 							onClick={() => imgRef.current.click()}
 						/>
-						<BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer' />
+						<div className="dropdown">
+							<div tabIndex={0} role="button" className="btn m-1"><BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer'  /></div>
+							<ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+								<li><a>
+									<EmojiPicker onEmojiClick={(e)=>{setText(e.emoji+text);
+										console.log(e.emoji)
+									} } theme="dark" emojiStyle="twitter" />
+								</a></li>
+							</ul>
+						</div>
+
+
+
 					</div>
 					<input type='file'
 						accept='image/*'
-					hidden ref={imgRef} onChange={handleImgChange} />
+						hidden ref={imgRef} onChange={handleImgChange} />
 					<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
 						{isPending ? "Posting..." : "Post"}
 					</button>
