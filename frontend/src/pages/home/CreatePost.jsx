@@ -73,8 +73,8 @@ const CreatePost = () => {
 					className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800 t-area'
 					placeholder='What is happening?!'
 					value={text}
-					onChange={(e) => {setText(e.target.value)}}
-					
+					onChange={(e) => { setText(e.target.value) }}
+
 				/>
 				{img && (
 					<div className='relative w-72 mx-auto'>
@@ -90,21 +90,16 @@ const CreatePost = () => {
 				)}
 
 				<div className='flex justify-between border-t py-2 border-t-gray-700'>
-					<div className='flex gap-1 items-center'>
+					<div className='flex gap-1 items-center position:absolute'>
 						<CiImageOn
 							className='fill-primary w-6 h-6 cursor-pointer'
 							onClick={() => imgRef.current.click()}
 						/>
-						<div className="dropdown">
-							<div tabIndex={0} role="button" className="btn m-1"><BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer'  /></div>
-							<ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-								<li><a>
-									<EmojiPicker onEmojiClick={(e)=>{setText(e.emoji+text);
-										console.log(e.emoji)
-									} } theme="dark" emojiStyle="twitter" />
-								</a></li>
-							</ul>
-						</div>
+						<BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer' onClick={() => { setEmojiPicker(!emojiPicker) }} />
+
+							<EmojiPicker className="position:relative z-20" open={emojiPicker} onEmojiClick={(e) => {
+								setText(text + e.emoji);
+							}} theme="dark" emojiStyle="twitter" />
 
 
 
