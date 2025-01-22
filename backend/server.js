@@ -20,9 +20,9 @@ cloudinary.config({
 })
 
 const app=express();
+app.use(cors());
 const PORT = process.env.PORT
 const __dirname = path.resolve()
-app,use(cors());
 app.use(express.json({limit:"5mb"})); //to parse express body
 //if limit too large or system vulnerable to DoService attacks
 app.use(express.urlencoded({extended:true}));//to parse form data in form of url encoded
